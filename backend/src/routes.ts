@@ -2,23 +2,26 @@ import { Router } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import apiSpec from '../openapi.json';
 
-import * as BookController from './controllers/book';
+import * as PersonController from './controllers/person';
+import * as TaskController from './controllers/task';
 
 const swaggerUiOptions = {
-  customCss: '.swagger-ui .topbar { display: none }'
+    customCss: '.swagger-ui .topbar { display: none }'
 };
 
 const router = Router();
 
 // Book routes
-router.post('/book/add', BookController.add);
-router.get('/book/all', BookController.all);
-router.get('/book/search', BookController.search);
+router.post('/task/add', TaskController.add);
+router.post('/task/next-assignee', TaskController.getNextAssignee);
+router.get('/task/all', TaskController.getAll);
+router.post('/person/add', PersonController.add);
+router.get('/person/all', PersonController.getAll);
 
 // Dev routes
 if (process.env.NODE_ENV === 'development') {
-  router.use('/dev/api-docs', swaggerUi.serve);
-  router.get('/dev/api-docs', swaggerUi.setup(apiSpec, swaggerUiOptions));
+    router.use('/dev/api-docs', swaggerUi.serve);
+    router.get('/dev/api-docs', swaggerUi.setup(apiSpec, swaggerUiOptions));
 }
 
 export default router;
