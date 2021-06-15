@@ -8,15 +8,15 @@ import Book from '../../models/Book';
  * @param author String containing the author name or part of the author's name
  */
 const buildBookSeachQuery = (name?: string, author?: string): { [key: string]: any } => {
-  const query: any = {};
-  if (name) {
-    query.name = new RegExp(`.*${name}.*`, 'i');
-  }
-  if (author) {
-    query.author = new RegExp(`.*${author}.*`, 'i');
-  }
+    const query: any = {};
+    if (name) {
+        query.name = new RegExp(`.*${name}.*`, 'i');
+    }
+    if (author) {
+        query.author = new RegExp(`.*${author}.*`, 'i');
+    }
 
-  return query;
+    return query;
 };
 
 interface SearchReqBody {
@@ -25,11 +25,11 @@ interface SearchReqBody {
 }
 
 const search: RequestHandler = async (req: Request<{}, {}, {}, SearchReqBody>, res) => {
-  const { name, author } = req.query;
+    const { name, author } = req.query;
 
-  const query = buildBookSeachQuery(name, author);
-  const books = await Book.find(query);
-  res.send({ books });
+    const query = buildBookSeachQuery(name, author);
+    const books = await Book.find(query);
+    res.send({ books });
 };
 
 export default requestMiddleware(search);

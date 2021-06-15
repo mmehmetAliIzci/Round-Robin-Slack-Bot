@@ -3,7 +3,7 @@ import all from './all';
 import search from './search';
 
 export {
-  add,
-  all,
-  search
+    add,
+    all,
+    search
 };
