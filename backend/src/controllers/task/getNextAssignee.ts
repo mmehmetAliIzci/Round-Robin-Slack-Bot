@@ -21,11 +21,10 @@ const getNextAssignee: RequestHandler = async (req: Request<{}, {}, ReqBody>, re
     const { name } = req.body;
     const task: ITask = await Task.findOne({ name: name });
     let assigneeId;
+
     if (!task) {
         throw new BadRequest('No task found');
-    } else if (!task.assignees) {
-        throw new BadRequest('No assignees found');
-    } else if (task.assignees.length > 0) {
+    } else if (task.assignees?.length < 1) {
         throw new BadRequest('No assignees found');
     }
 

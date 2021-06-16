@@ -4,7 +4,7 @@ import TimeStampPlugin, { ITimeStampedDocument } from './plugins/timestamp-plugi
 export interface ITask extends ITimeStampedDocument {
     /** Name of the task */
     name: string;
-    assignees: [];
+    assignees: Array<string>;
     assignee: string;
 }
 
