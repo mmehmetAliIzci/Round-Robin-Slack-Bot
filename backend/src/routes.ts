@@ -14,6 +14,7 @@ const router = Router();
 // Book routes
 router.post('/task/add', TaskController.add);
 router.post('/task/next-assignee', TaskController.getNextAssignee);
+router.get('/task', TaskController.getByName);
 router.get('/task/all', TaskController.getAll);
 router.post('/person/add', PersonController.add);
 router.get('/person/all', PersonController.getAll);
