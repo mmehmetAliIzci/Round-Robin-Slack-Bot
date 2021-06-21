@@ -12,7 +12,8 @@ const swaggerUiOptions = {
 const router = Router();
 
 // Book routes
-router.post('/task/add', TaskController.add);
+router.post('/task/add', TaskController.addNewTask);
+router.post('/task/add-assignee', TaskController.addAssigneesToTask);
 router.post('/task/next-assignee', TaskController.getNextAssignee);
 router.get('/task', TaskController.getByName);
 router.get('/task/all', TaskController.getAll);

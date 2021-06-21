@@ -1,16 +1,18 @@
+export type OperationType = 'create'| 'add-assignee' | 'delete' |'';
+
 export interface ParsedCommand {
-    operation: string,
+    operation: OperationType,
     nameOfTheTask: string,
     users?: Array<string>
 }
-const allowedOperations: Array<string> = ['create', 'update', 'delete'];
+const allowedOperations: Array<string> = ['create', 'add-assignee', 'delete'];
 
 export async function parseTaskCommand (text: string): Promise<ParsedCommand> {
     const commands = text.trim().split(/\s+/);
     let response: ParsedCommand = { operation: '', nameOfTheTask: '' };
 
     if (commands.length >= 2) {
-        response.operation = allowedOperations.find((command) => command === commands[0].toLowerCase()) ?? '';
+        response.operation = (allowedOperations.find((command) => command === commands[0].toLowerCase()) ?? '') as OperationType;
         response.nameOfTheTask = commands[1];
         if (commands.length > 2) {
             response.users = commands.slice(1);

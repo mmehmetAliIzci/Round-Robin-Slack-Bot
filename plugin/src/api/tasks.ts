@@ -2,8 +2,8 @@ import fetch from 'node-fetch';
 import { Assignee } from '../model/Assignee';
 import { Task } from '../model/Task';
 
-export async function createTask (name: string, ownerTeamId: string, people?: Assignee[]): Promise<{ task?: Task; error?: string }> {
-    const URL = `${process.env.BASE_URL}/task/add`;
+export async function createTask (name: string, ownerTeamId: string, people?: Assignee[], url?: string): Promise<{ task?: Task; error?: string }> {
+    const URL = url ?? `${process.env.BASE_URL}/task/add`;
     let body: { name: string, ownerTeamId: string, assignees?: Assignee[] } = {
         name,
         ownerTeamId: ownerTeamId,
@@ -24,4 +24,8 @@ export async function createTask (name: string, ownerTeamId: string, people?: As
     } catch (e) {
         return Promise.resolve({ error: e.error });
     }
+}
+
+export async function addAssigneesToTask (name: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
+    return createTask(name, ownerTeamId, people, `${process.env.BASE_URL}/task/add-assignee`);
 }
