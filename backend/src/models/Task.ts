@@ -6,12 +6,14 @@ export interface ITask extends ITimeStampedDocument {
     name: string;
     assignees: Array<string>;
     assignee: string;
+    ownerTeamId: string;
 }
 
 interface ITaskModel extends Model<ITask> { }
 
 const schema = new Schema<ITask>({
     name: { type: String, index: true, required: true, unique: true },
+    ownerTeamId: { type: String, index: true, required: true, unique: true },
     assignees: [{ type: Schema.Types.ObjectId, ref: 'Person' }],
     assignee: { type: Schema.Types.ObjectId, ref: 'Person' }
 });

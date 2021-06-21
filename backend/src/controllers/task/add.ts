@@ -3,7 +3,7 @@ import Joi from '@hapi/joi';
 import requestMiddleware from '../../middleware/request-middleware';
 import Task from '../../models/Task';
 import BadRequest from '../../errors/bad-request';
-import Person from '../../models/Person';
+import Person, { PersonResponse } from '../../models/Person';
 
 const assignee = Joi.object().keys({
     name: Joi.string().required(),
@@ -12,36 +12,43 @@ const assignee = Joi.object().keys({
 });
 export const addTaskSchema = Joi.object().keys({
     name: Joi.string().required(),
-    assignees: Joi.array().items(assignee).required()
+    ownerTeamId: Joi.string().required(),
+    assignees: Joi.array().items(assignee)
 });
 
 interface AddReqBody {
-  name: string;
-  assignees: Array<{ name: string, teamId: string, isBot: boolean }>;
+    name: string;
+    ownerTeamId: string;
+    assignees?: Array<PersonResponse>;
 }
 
 const add: RequestHandler = async (req: Request<{}, {}, AddReqBody>, res) => {
-    const { name, assignees } = req.body;
-    let foundAssignees = [];
+    const { name, ownerTeamId, assignees } = req.body;
+    let foundAssignees: string[] = [];
 
     const task = await Task.findOne({ name: name });
     if (task) {
         return new BadRequest('This task name already exists');
     }
-    //
-    // Add new people if they not exists in db
-    foundAssignees = await Promise.all(assignees.map(async (assignee: {name: string, teamId: string, isBot: boolean}): Promise<string> => {
-        const upsertAssignee = await Person.findOneAndUpdate({ name: assignee.name, teamId: assignee.teamId }, assignee, { upsert: true });
-        return upsertAssignee?._id;
-    }));
 
-    const newTask = new Task({ name, assignees: foundAssignees });
-    await newTask.save();
-    //
-    res.send({
-        message: 'Saved',
-        task: newTask
-    });
+    if (assignees?.length > 0) {
+        foundAssignees = await Promise.all(assignees.map(async (assignee: PersonResponse): Promise<string> => {
+            const upsertAssignee = await Person.findOneAndUpdate({ slackId: assignee.slackId }, assignee, { upsert: true });
+            return upsertAssignee?._id;
+        }));
+    }
+
+    // Add new people if they not exists in db
+    const newTask = new Task({ name, ownerTeamId, assignees: foundAssignees });
+    try {
+        await newTask.save();
+        res.send({
+            message: 'Saved',
+            task: newTask
+        });
+    } catch (e) {
+        return new BadRequest(e.error);
+    }
 };
 
 export default requestMiddleware(add, { validation: { body: addTaskSchema } });

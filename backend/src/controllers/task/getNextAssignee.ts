@@ -6,6 +6,7 @@ import Person, { IPerson } from '../../models/Person';
 
 interface ReqBody {
     name: string;
+    ownerTeamId: string;
 }
 
 function getNextAssigneeId (currentAssignee: string, assignees: Array<string>): string {
@@ -18,8 +19,8 @@ function getNextAssigneeId (currentAssignee: string, assignees: Array<string>): 
 }
 
 const getNextAssignee: RequestHandler = async (req: Request<{}, {}, ReqBody>, res) => {
-    const { name } = req.body;
-    const task: ITask = await Task.findOne({ name: name });
+    const { name, ownerTeamId } = req.body;
+    const task: ITask = await Task.findOne({ name, ownerTeamId });
     let assigneeId;
 
     if (!task) {
@@ -35,7 +36,6 @@ const getNextAssignee: RequestHandler = async (req: Request<{}, {}, ReqBody>, re
         // get the next one
         assigneeId = getNextAssigneeId(task.assignee, task.assignees);
     }
-
     task.assignee = assigneeId;
     await task.save();
     const assignee: IPerson = await Person.findById(assigneeId);
