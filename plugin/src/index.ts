@@ -34,7 +34,11 @@ app.command('/task', async ({ command, ack, say, client }) => {
             if (result.task) {
                 await say(`Success ! here is the task ${result.task?.name}`);
             } else {
-                await say('Task creation unsuccessful');
+                await client.chat.postEphemeral({
+                    channel: command.channel_id,
+                    user: command.user_id,
+                    text: 'Task creation unsuccessful'
+                });
             }
             break;
         }
@@ -43,7 +47,11 @@ app.command('/task', async ({ command, ack, say, client }) => {
             if (result.task) {
                 await say(`Success ! We added new assignees to ${result.task?.name}`);
             } else {
-                await say('Adding new assignees are not successfull');
+                await client.chat.postEphemeral({
+                    channel: command.channel_id,
+                    user: command.user_id,
+                    text: 'Adding new assignees are not successfull'
+                });
             }
             break;
         }
@@ -52,7 +60,11 @@ app.command('/task', async ({ command, ack, say, client }) => {
             if (result.assignee) {
                 await say(`<@${result.assignee.slackId}> You are the current assignee for ${parsedResult.nameOfTheTask}`);
             } else {
-                await say('Adding new assignees are not successful');
+                await client.chat.postEphemeral({
+                    channel: command.channel_id,
+                    user: command.user_id,
+                    text: 'Getting new assignee was not successful'
+                });
             }
             break;
         }
