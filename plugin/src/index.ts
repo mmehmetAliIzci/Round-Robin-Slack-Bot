@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addAssigneesToTask, createTask } from './api/tasks';
+import { addAssigneesToTask, createTask, getNextAssignee } from './api/tasks';
 import { Assignee } from './model/Assignee';
 import { getUserInfoById } from './commandUtils/userInfomation';
 import { parseTaskCommand } from './commandUtils/parseCommand';
@@ -44,6 +44,15 @@ app.command('/task', async ({ command, ack, say, client }) => {
                 await say(`Success ! We added new assignees to ${result.task?.name}`);
             } else {
                 await say('Adding new assignees are not successfull');
+            }
+            break;
+        }
+        case 'next': {
+            let result = await getNextAssignee(parsedResult.nameOfTheTask, command.team_id);
+            if (result.assignee) {
+                await say(`<@${result.assignee.slackId}> You are the current assignee for ${parsedResult.nameOfTheTask}`);
+            } else {
+                await say('Adding new assignees are not successful');
             }
             break;
         }

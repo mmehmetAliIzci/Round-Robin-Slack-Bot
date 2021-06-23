@@ -9,7 +9,6 @@ export async function createTask (name: string, ownerTeamId: string, people?: As
         ownerTeamId: ownerTeamId,
         assignees: people
     };
-
     try {
         const response = await fetch(URL, {
             method: 'POST',
@@ -26,6 +25,28 @@ export async function createTask (name: string, ownerTeamId: string, people?: As
     }
 }
 
-export async function addAssigneesToTask (name: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
-    return createTask(name, ownerTeamId, people, `${process.env.BASE_URL}/task/add-assignee`);
+export async function addAssigneesToTask (taskName: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
+    return createTask(taskName, ownerTeamId, people, `${process.env.BASE_URL}/task/add-assignee`);
+}
+
+export async function getNextAssignee (name: string, ownerTeamId: string): Promise<{ assignee?: Assignee; error?: string }> {
+    const URL = `${process.env.BASE_URL}/task/next-assignee`;
+    let body: { name: string, ownerTeamId: string } = {
+        name,
+        ownerTeamId: ownerTeamId
+    };
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (response.ok) {
+            const res: { message: string, assignee: Assignee } = await response.json();
+            return Promise.resolve({ assignee: res.assignee });
+        }
+        return Promise.resolve({ error: 'Something went wrong' });
+    } catch (e) {
+        return Promise.resolve({ error: e.error });
+    }
 }
