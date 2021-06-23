@@ -18,7 +18,7 @@ interface IPersonModel extends Model<IPerson> { }
 
 const schema = new Schema<IPerson>({
     slackId: { type: String, index: true, required: true },
-    teamId: { type: Number, index: true, required: true },
+    teamId: { type: String, index: true, required: true },
     name: { type: String, index: true, required: true },
     isBot: { type: Boolean, index: true, required: true }
 });

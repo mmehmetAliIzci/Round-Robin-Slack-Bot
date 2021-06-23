@@ -59,16 +59,14 @@ const addAssignee: RequestHandler = async (req: Request<{}, {}, AddReqBody>, res
 
     if (!task) {
         throw new BadRequest('No task found');
-    } else if (task.assignees?.length < 1) {
+    } else if (assignees?.length < 1) {
         throw new BadRequest('No assignees found');
     }
 
-    if (assignees?.length > 0) {
-        foundAssignees = await Promise.all(assignees.map(async (assignee: PersonResponse): Promise<string> => {
-            const upsertAssignee = await Person.findOneAndUpdate({ slackId: assignee.slackId }, assignee, { upsert: true, useFindAndModify: false, new: true });
-            return upsertAssignee?._id;
-        }));
-    }
+    foundAssignees = await Promise.all(assignees.map(async (assignee: PersonResponse): Promise<string> => {
+        const upsertAssignee = await Person.findOneAndUpdate({ slackId: assignee.slackId }, assignee, { upsert: true, useFindAndModify: false, new: true });
+        return upsertAssignee?._id;
+    }));
 
     task.assignees = task.assignees.concat(foundAssignees);
     await task.save();

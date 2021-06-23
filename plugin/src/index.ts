@@ -2,7 +2,7 @@ import { App } from '@slack/bolt';
 import { addAssigneesToTask, createTask } from './api/tasks';
 import { Assignee } from './model/Assignee';
 import { getUserInfoById } from './commandUtils/userInfomation';
-import { OperationType, parseTaskCommand } from './commandUtils/parseCommand';
+import { parseTaskCommand } from './commandUtils/parseCommand';
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
