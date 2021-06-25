@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addAssigneesToTask, createTask, getNextAssignee } from './api/tasks';
+import { addAssigneesToTask, createTask, getNextAssignee, removeAssigneesFromTask } from './api/tasks';
 import { Assignee } from './model/Assignee';
 import { getUserInfoById } from './commandUtils/userInfomation';
 import { parseTaskCommand } from './commandUtils/parseCommand';
@@ -50,7 +50,25 @@ app.command('/task', async ({ command, ack, say, client }) => {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Adding new assignees are not successfull'
+                    text: 'Adding new assignees are not successful'
+                });
+            }
+            break;
+        }
+        case 'remove-assignee': {
+            let result = await removeAssigneesFromTask(parsedResult.nameOfTheTask, command.team_id, assignees);
+            let assigneesMessage:string = '';
+
+            assignees.forEach((assignee, index) => {
+                assigneesMessage += `<@${assignee.slackId}>`;
+            });
+            if (result.task) {
+                await say(`Success ! We removed ${assigneesMessage} from ${result.task?.name}`);
+            } else {
+                await client.chat.postEphemeral({
+                    channel: command.channel_id,
+                    user: command.user_id,
+                    text: 'Adding new assignees are not successful'
                 });
             }
             break;

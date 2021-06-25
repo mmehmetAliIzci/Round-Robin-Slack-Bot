@@ -29,6 +29,10 @@ export async function addAssigneesToTask (taskName: string, ownerTeamId: string,
     return createTask(taskName, ownerTeamId, people, `${process.env.BASE_URL}/task/add-assignee`);
 }
 
+export async function removeAssigneesFromTask (taskName: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
+    return createTask(taskName, ownerTeamId, people, `${process.env.BASE_URL}/task/remove-assignee`);
+}
+
 export async function getNextAssignee (name: string, ownerTeamId: string): Promise<{ assignee?: Assignee; error?: string }> {
     const URL = `${process.env.BASE_URL}/task/next-assignee`;
     let body: { name: string, ownerTeamId: string } = {

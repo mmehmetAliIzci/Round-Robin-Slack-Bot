@@ -1,10 +1,13 @@
-import { addNewTask, addAssigneesToTask } from './add';
+import addTask from './addTask';
+import addAssignee from './addAssignee';
+import removeAssignee from './removeAssignee';
 import getAll from './get';
 import getNextAssignee from './getNextAssignee';
 import getByName from './getByName';
 export {
-    addNewTask,
-    addAssigneesToTask,
+    addTask,
+    addAssignee,
+    removeAssignee,
     getAll,
     getNextAssignee,
     getByName
