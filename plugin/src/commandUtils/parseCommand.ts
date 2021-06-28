@@ -1,11 +1,11 @@
-export type OperationType = 'create'| 'add-assignee' | 'remove-assignee' | 'next' |'delete' |'';
+export type OperationType = 'create' | 'remove' | 'add-assignee' | 'remove-assignee' | 'next' |'delete' |'';
 
 export interface ParsedCommand {
     operation: OperationType,
     nameOfTheTask: string,
     users?: Array<string>
 }
-const allowedOperations: Array<string> = ['create', 'add-assignee', 'remove-assignee', 'next', 'delete'];
+const allowedOperations: Array<string> = ['create', 'remove', 'add-assignee', 'remove-assignee', 'next', 'delete'];
 
 export async function parseTaskCommand (text: string): Promise<ParsedCommand> {
     const commands = text.trim().split(/\s+/);

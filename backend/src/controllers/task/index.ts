@@ -4,11 +4,13 @@ import removeAssignee from './removeAssignee';
 import getAll from './get';
 import getNextAssignee from './getNextAssignee';
 import getByName from './getByName';
+import removeTask from './removeTask';
 export {
     addTask,
     addAssignee,
     removeAssignee,
     getAll,
     getNextAssignee,
-    getByName
+    getByName,
+    removeTask
 };

@@ -11,14 +11,21 @@ For the longest time, teams suffered to determine who will be the next person to
 
 Thus, I wanted to implement my Excel sheet free round-robin system where people can:
 
-- [ ] create tasks
-- [ ] delete tasks
-- [ ] rename tasks
-- [ ] assign single person to task
-- [ ] assign multiple people to task
-- [ ] un-assign single person from task
-- [ ] un-assign multiple people from task
-- [ ] Ask RoundRobin bot who will be the next person of the task
+- [X] create tasks
+- [X] delete tasks
+- [ ] rename tasks (decided not to)
+- [X] assign single person to task
+- [X] assign multiple people to task
+- [X] un-assign single person from task
+- [X] un-assign multiple people from task
+- [X] Ask RoundRobin bot who will be the next person of the task
+- [ ] Add help command
+- [ ] Beautify messages
+
+Security
+
+[ ] Disallow any request except slack
+[ ] Allow only same team to change the tasks
 
 For this we need 2 main things:
 
@@ -48,4 +55,9 @@ We only need a BE server with a DB. I choose to use MONGODB with express server.
 
 ### Challenges
 
-TBD
+#### What should happen if RoundRobin has only one user, which is the current assignee and next assignee has been asked ?
+
+- Keep circling which is the next user
+- Say the circle 
+
+#### How should you divide commands in slack ?
