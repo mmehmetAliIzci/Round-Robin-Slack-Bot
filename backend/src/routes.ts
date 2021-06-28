@@ -13,6 +13,7 @@ const router = Router();
 
 // Book routes
 router.post('/task/add', TaskController.addTask);
+router.post('/task/remove', TaskController.removeTask);
 router.post('/task/add-assignee', TaskController.addAssignee);
 router.post('/task/remove-assignee', TaskController.removeAssignee);
 router.post('/task/next-assignee', TaskController.getNextAssignee);
