@@ -57,7 +57,7 @@ We only need a BE server with a DB. I choose to use MONGODB with express server.
 
 #### What should happen if RoundRobin has only one user, which is the current assignee and next assignee has been asked ?
 
-- Keep circling which is the next user
-- Say the circle 
+- Keep circling and ignore that next user is the current user 
+- Throw error because there is only one person
 
 #### How should you divide commands in slack ?

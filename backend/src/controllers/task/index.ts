@@ -8,9 +8,9 @@ import removeTask from './removeTask';
 export {
     addTask,
     addAssignee,
-    removeAssignee,
     getAll,
-    getNextAssignee,
     getByName,
+    getNextAssignee,
+    removeAssignee,
     removeTask
 };
