@@ -19,8 +19,8 @@ Thus, I wanted to implement my Excel sheet free round-robin system where people 
 - [X] un-assign single person from task
 - [X] un-assign multiple people from task
 - [X] Ask RoundRobin bot who will be the next person of the task
-- [ ] Add help command
 - [ ] Beautify messages
+- [X] Add help command
 
 Security
 

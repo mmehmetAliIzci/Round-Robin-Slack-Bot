@@ -3,6 +3,7 @@ import { addAssigneesToTask, createTask, getNextAssignee, removeAssigneesFromTas
 import { Assignee } from './model/Assignee';
 import { getUserInfoById } from './commandUtils/userInfomation';
 import { parseTaskCommand } from './commandUtils/parseCommand';
+    helpBlock, nextSuccess, nextUnSuccess, removeAssigneeSuccess, removeAssigneeUnSuccess,
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -97,6 +98,12 @@ app.command('/task', async ({ command, ack, say, client }) => {
                     text: 'Getting new assignee was not successful'
                 });
             }
+            break;
+        }
+        case 'help': {
+            await say({
+                blocks: helpBlock
+            });
             break;
         }
         default: {
