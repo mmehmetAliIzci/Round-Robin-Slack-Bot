@@ -19,39 +19,18 @@ Thus, I wanted to implement my Excel sheet free round-robin system where people 
 - [X] un-assign single person from task
 - [X] un-assign multiple people from task
 - [X] Ask RoundRobin bot who will be the next person of the task
-- [ ] Beautify messages
 - [X] Add help command
+- [X] Beautify messages
 
 Security
 
-[ ] Disallow any request except slack
-[ ] Allow only same team to change the tasks
+- [ ] Disallow any request except slack
+- [ ] Allow only same team to change the tasks
 
 For this we need 2 main things:
 
 1) Slack application which will be responsible for sending requests to our BE
 2) BE server who will be processing and replying with correct behaviour
-
-Main schema will eventually look like
-
-```json
-Tasks
-  - ID
-  - name: string
-  - people: string[]
-  - ownerID: string
-```
-
-```json
-People
-  - name: string
-  - ID: string
-```
-
-### TechStack
-
-We only need a BE server with a DB. I choose to use MONGODB with express server.
-
 
 ### Challenges
 

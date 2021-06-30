@@ -3,18 +3,18 @@ import { addAssigneesToTask, createTask, getNextAssignee, removeAssigneesFromTas
 import { Assignee } from './model/Assignee';
 import { getUserInfoById } from './commandUtils/userInfomation';
 import { parseTaskCommand } from './commandUtils/parseCommand';
+import {
+    addAssigneeSuccess, addAssigneeUnSuccess,
+    createTaskSuccess,
+    createTaskUnSuccess,
     helpBlock, nextSuccess, nextUnSuccess, removeAssigneeSuccess, removeAssigneeUnSuccess,
+    removeTaskSuccess,
+    removeTaskUnsuccess, wrongUsage
+} from './slackBlocks';
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     token: process.env.OAUTH_TOKEN
-});
-
-/* Add functionality here */
-app.message(':wave:', async ({ message, say }) => {
-    if ('user' in message) {
-        await say(`Hello, <@${message.user}>`);
-    }
 });
 
 app.command('/task', async ({ command, ack, say, client }) => {
@@ -33,12 +33,12 @@ app.command('/task', async ({ command, ack, say, client }) => {
         case 'create': {
             let result = await createTask(parsedResult.nameOfTheTask, command.team_id, assignees);
             if (result.task) {
-                await say(`Success ! here is the task ${result.task?.name}`);
+                await say({ blocks: createTaskSuccess(result.task?.name) });
             } else {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Task creation unsuccessful'
+                    blocks: createTaskUnSuccess
                 });
             }
             break;
@@ -46,25 +46,30 @@ app.command('/task', async ({ command, ack, say, client }) => {
         case 'remove': {
             let result = await removeTask(parsedResult.nameOfTheTask);
             if (result.message) {
-                await say(`Success ! We removed ${parsedResult.nameOfTheTask}`);
+                await say({ blocks: removeTaskSuccess(parsedResult.nameOfTheTask) });
             } else {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Task deletion unsuccessful'
+                    blocks: removeTaskUnsuccess(parsedResult.nameOfTheTask)
                 });
             }
             break;
         }
         case 'add-assignee': {
             let result = await addAssigneesToTask(parsedResult.nameOfTheTask, command.team_id, assignees);
+            let assigneesMessage:string = '';
+
             if (result.task) {
-                await say(`Success ! We added new assignees to ${result.task?.name}`);
+                assignees.forEach((assignee, index) => {
+                    assigneesMessage += `<@${assignee.slackId}>`;
+                });
+                await say({ blocks: addAssigneeSuccess(parsedResult.nameOfTheTask, assigneesMessage) });
             } else {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Adding new assignees are not successful'
+                    blocks: addAssigneeUnSuccess(parsedResult.nameOfTheTask)
                 });
             }
             break;
@@ -73,16 +78,16 @@ app.command('/task', async ({ command, ack, say, client }) => {
             let result = await removeAssigneesFromTask(parsedResult.nameOfTheTask, command.team_id, assignees);
             let assigneesMessage:string = '';
 
-            assignees.forEach((assignee, index) => {
-                assigneesMessage += `<@${assignee.slackId}>`;
-            });
             if (result.task) {
-                await say(`Success ! We removed ${assigneesMessage} from ${result.task?.name}`);
+                assignees.forEach((assignee, index) => {
+                    assigneesMessage += `<@${assignee.slackId}>`;
+                });
+                await say({ blocks: removeAssigneeSuccess(parsedResult.nameOfTheTask, assigneesMessage) });
             } else {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Removing new assignee(s) are not successful'
+                    blocks: removeAssigneeUnSuccess(parsedResult.nameOfTheTask)
                 });
             }
             break;
@@ -90,12 +95,12 @@ app.command('/task', async ({ command, ack, say, client }) => {
         case 'next': {
             let result = await getNextAssignee(parsedResult.nameOfTheTask, command.team_id);
             if (result.assignee) {
-                await say(`<@${result.assignee.slackId}> You are the current assignee for ${parsedResult.nameOfTheTask}`);
+                await say({ blocks: nextSuccess(parsedResult.nameOfTheTask, result.assignee.slackId) });
             } else {
                 await client.chat.postEphemeral({
                     channel: command.channel_id,
                     user: command.user_id,
-                    text: 'Getting new assignee was not successful'
+                    blocks: nextUnSuccess(parsedResult.nameOfTheTask)
                 });
             }
             break;
@@ -111,7 +116,7 @@ app.command('/task', async ({ command, ack, say, client }) => {
         }
         }
     } catch (e) {
-        await say('It looks like you didnt pass enough parameters, try /task help');
+        await say({ blocks: wrongUsage });
     }
 });
 
