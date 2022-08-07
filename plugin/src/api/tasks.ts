@@ -3,7 +3,7 @@ import { Assignee } from '../model/Assignee';
 import { Task } from '../model/Task';
 
 export async function createTask (name: string, ownerTeamId: string, people?: Assignee[], url?: string): Promise<{ task?: Task; error?: string }> {
-    const URL = url ?? `${process.env.BASE_URL}/task/add`;
+    const URL = url ?? `${process.env.BE_BASE_URL}/task/add`;
     let body: { name: string, ownerTeamId: string, assignees?: Assignee[] } = {
         name,
         ownerTeamId: ownerTeamId,
@@ -26,7 +26,7 @@ export async function createTask (name: string, ownerTeamId: string, people?: As
 }
 
 export async function removeTask (name: string): Promise<{message?: string, error?: string}> {
-    const URL = `${process.env.BASE_URL}/task/remove`;
+    const URL = `${process.env.BE_BASE_URL}/task/remove`;
     let body: { name: string} = {
         name
     };
@@ -47,15 +47,15 @@ export async function removeTask (name: string): Promise<{message?: string, erro
 }
 
 export async function addAssigneesToTask (taskName: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
-    return createTask(taskName, ownerTeamId, people, `${process.env.BASE_URL}/task/add-assignee`);
+    return createTask(taskName, ownerTeamId, people, `${process.env.BE_BASE_URL}/task/add-assignee`);
 }
 
 export async function removeAssigneesFromTask (taskName: string, ownerTeamId: string, people: Assignee[]): Promise<{ task?: Task; error?: string }> {
-    return createTask(taskName, ownerTeamId, people, `${process.env.BASE_URL}/task/remove-assignee`);
+    return createTask(taskName, ownerTeamId, people, `${process.env.BE_BASE_URL}/task/remove-assignee`);
 }
 
 export async function getNextAssignee (name: string, ownerTeamId: string): Promise<{ assignee?: Assignee; error?: string }> {
-    const URL = `${process.env.BASE_URL}/task/next-assignee`;
+    const URL = `${process.env.BE_BASE_URL}/task/next-assignee`;
     let body: { name: string, ownerTeamId: string } = {
         name,
         ownerTeamId: ownerTeamId
