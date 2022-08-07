@@ -1,4 +1,4 @@
-/* eslint no-param-reassign:0*/
+/* eslint no-param-reassign:0 */
 import { Document, Schema } from 'mongoose';
 
 export interface ITimeStampedDocument extends Document {
@@ -9,16 +9,16 @@ export interface ITimeStampedDocument extends Document {
 }
 
 const TimeStampPlugin = function (schema: Schema) {
-  schema.add({ createdAt: { type: Number, index: true } });
-  schema.add({ updatedAt: { type: Number, index: true } });
+    schema.add({ createdAt: { type: Number, index: true } });
+    schema.add({ updatedAt: { type: Number, index: true } });
 
-  schema.pre<ITimeStampedDocument>('save', function (next) {
-    if (this.isNew) {
-      this.createdAt = new Date().getTime();
-    }
-    this.updatedAt = new Date().getTime();
-    next();
-  });
+    schema.pre<ITimeStampedDocument>('save', function (next) {
+        if (this.isNew) {
+            this.createdAt = new Date().getTime();
+        }
+        this.updatedAt = new Date().getTime();
+        next();
+    });
 };
 
 export default TimeStampPlugin;

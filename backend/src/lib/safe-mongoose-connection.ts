@@ -16,9 +16,9 @@ interface SafeMongooseConnectionOptions {
 }
 
 const defaultMongooseConnectionOptions: ConnectionOptions = {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
 };
 
 /**
@@ -57,74 +57,74 @@ export default class SafeMongooseConnection {
    * @param mongoUrl MongoDB URL
    * @param onConnectedCallback callback to be called when mongo connection is successful
    */
-  constructor(options: SafeMongooseConnectionOptions) {
-    this.options = options;
-    mongoose.connection.on('error', this.onError);
-    mongoose.connection.on('connected', this.onConnected);
-    mongoose.connection.on('disconnected', this.onDisconnected);
-    mongoose.connection.on('reconnected', this.onReconnected);
+  constructor (options: SafeMongooseConnectionOptions) {
+      this.options = options;
+      mongoose.connection.on('error', this.onError);
+      mongoose.connection.on('connected', this.onConnected);
+      mongoose.connection.on('disconnected', this.onDisconnected);
+      mongoose.connection.on('reconnected', this.onReconnected);
 
-    if (options.debugCallback) {
-      mongoose.set('debug', options.debugCallback);
-    }
-    if (options.retryDelayMs) {
-      this.retryDelayMs = options.retryDelayMs;
-    }
+      if (options.debugCallback) {
+          mongoose.set('debug', options.debugCallback);
+      }
+      if (options.retryDelayMs) {
+          this.retryDelayMs = options.retryDelayMs;
+      }
   }
 
   /** Close mongo connection */
-  public close(onClosed: (err: any) => void = () => { }, force: boolean = false) {
-    if (this.connectionTimeout) {
-      clearTimeout(this.connectionTimeout);
-    }
-    this.shouldCloseConnection = true;
-    mongoose.connection.close(force, onClosed);
+  public close (onClosed: (err: any) => void = () => { }, force: boolean = false) {
+      if (this.connectionTimeout) {
+          clearTimeout(this.connectionTimeout);
+      }
+      this.shouldCloseConnection = true;
+      mongoose.connection.close(force, onClosed);
   }
 
   /** Start mongo connection */
-  public connect(onConnectedCallback: IOnConnectedCallback) {
-    this.onConnectedCallback = onConnectedCallback;
-    this.startConnection();
+  public connect (onConnectedCallback: IOnConnectedCallback) {
+      this.onConnectedCallback = onConnectedCallback;
+      this.startConnection();
   }
 
   private startConnection = () => {
-    if (this.options.onStartConnection) {
-      this.options.onStartConnection(this.options.mongoUrl);
-    }
-    mongoose.connect(this.options.mongoUrl, this.mongoConnectionOptions).catch(() => { });
-  }
+      if (this.options.onStartConnection) {
+          this.options.onStartConnection(this.options.mongoUrl);
+      }
+      mongoose.connect(this.options.mongoUrl, this.mongoConnectionOptions).catch(() => { });
+  };
 
   /**
    * Handler called when mongo connection is established
    */
   private onConnected = () => {
-    this.isConnectedBefore = true;
-    this.onConnectedCallback(this.options.mongoUrl);
+      this.isConnectedBefore = true;
+      this.onConnectedCallback(this.options.mongoUrl);
   };
 
   /** Handler called when mongo gets re-connected to the database */
   private onReconnected = () => {
-    this.onConnectedCallback(this.options.mongoUrl);
+      this.onConnectedCallback(this.options.mongoUrl);
   };
 
   /** Handler called for mongo connection errors */
   private onError = () => {
-    if (this.options.onConnectionError) {
-      const error = new Error(`Could not connect to MongoDB at ${this.options.mongoUrl}`);
-      this.options.onConnectionError(error, this.options.mongoUrl);
-    }
+      if (this.options.onConnectionError) {
+          const error = new Error(`Could not connect to MongoDB at ${this.options.mongoUrl}`);
+          this.options.onConnectionError(error, this.options.mongoUrl);
+      }
   };
 
   /** Handler called when mongo connection is lost */
   private onDisconnected = () => {
-    if (!this.isConnectedBefore && !this.shouldCloseConnection) {
-      this.connectionTimeout = setTimeout(() => {
-        this.startConnection();
-        clearTimeout(this.connectionTimeout);
-      }, this.retryDelayMs);
-      if (this.options.onConnectionRetry) {
-        this.options.onConnectionRetry(this.options.mongoUrl);
+      if (!this.isConnectedBefore && !this.shouldCloseConnection) {
+          this.connectionTimeout = setTimeout(() => {
+              this.startConnection();
+              clearTimeout(this.connectionTimeout);
+          }, this.retryDelayMs);
+          if (this.options.onConnectionRetry) {
+              this.options.onConnectionRetry(this.options.mongoUrl);
+          }
       }
-    }
   };
 }
